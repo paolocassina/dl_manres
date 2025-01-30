@@ -1,0 +1,12 @@
+Probing Analysis Results (LOGISTIC_PCA)
+========================================
+Timestamp: 2025-01-30_12-21-32
+Model: Logistic Regression
+Cross-validation: 5-fold stratified
+
+Accuracy: 0.3527
+F1-score: 0.4275
+AUC-ROC: 0.3480
+
+PCA Applied
+PCA Info: 1.0000

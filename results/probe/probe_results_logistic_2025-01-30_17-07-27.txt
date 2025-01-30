@@ -1,0 +1,15 @@
+Model:../DATA/EMBS/BERT-BASE-UNCASED, Layer: 6Probing Analysis Results (LOGISTIC)
+========================================
+Timestamp: 2025-01-30_17-07-27
+Model: Logistic Regression
+Cross-validation: 5-fold stratified
+
+Accuracy: 0.9436
+F1-score: 0.9510
+AUC-ROC: 0.9933
+
+Random Baseline Results (Shuffled Labels)
+========================================
+Accuracy: 0.5855
+F1-score: 0.6163
+AUC-ROC: 0.6720

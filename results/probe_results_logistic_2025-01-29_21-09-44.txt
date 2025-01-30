@@ -1,0 +1,9 @@
+Probing Analysis Results (LOGISTIC)
+========================================
+Timestamp: 2025-01-29_21-09-44
+Model: Logistic Regression
+Cross-validation: 5-fold stratified
+
+Accuracy: 0.9073
+F1-score: 0.9177
+AUC-ROC: 0.9600

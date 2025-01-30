@@ -1,0 +1,17 @@
+BERT base layer 12
+
+Probing Analysis Results (LOGISTIC)
+========================================
+Timestamp: 2025-01-30_16-33-12
+Model: Logistic Regression
+Cross-validation: 5-fold stratified
+
+Accuracy: 0.8691
+F1-score: 0.8775
+AUC-ROC: 0.9600
+
+Random Baseline Results (Shuffled Labels)
+========================================
+Accuracy: 0.6036
+F1-score: 0.6300
+AUC-ROC: 0.6107
