@@ -18,10 +18,10 @@ This folder contains a single file, surprisal_examples.csv, which contains sente
 
 
 #### extract_representations.py
-Extracts contextualized word embeddings from BERT for target verbs.
-Supports different BERT models (e.g., bert-base, bert-large).
-Can specify the BERT layer at which embeddings are extracted.
-Saves extracted embeddings for further analysis.
+Extracts contextualized word embeddings from BERT for target verbs. \\
+Supports different BERT models (e.g., bert-base, bert-large). \\
+Can specify the BERT layer at which embeddings are extracted. \\
+Saves extracted embeddings for further analysis. \\
 
 #### visualize_embeddings.py
 Visualizes verb representations using t-SNE, a dimensionality reduction technique.
