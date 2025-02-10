@@ -23,6 +23,9 @@ Supports different BERT models (e.g., bert-base, bert-large).
 Can specify the BERT layer at which embeddings are extracted.
 Saves extracted embeddings for further analysis.
 
+Example usage:
+\texttt{python} 
+
 #### visualize_embeddings.py
 Visualizes verb representations using t-SNE, a dimensionality reduction technique.
 Helps interpret how verbs cluster in high dimensional space.
