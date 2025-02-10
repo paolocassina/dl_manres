@@ -24,19 +24,38 @@ Can specify the BERT layer at which embeddings are extracted.
 Saves extracted embeddings for further analysis.
 
 Example usage:
-\texttt{python} 
+```ruby
+python extract_representations.py --model_name "bert-base-uncased" --layer_num 6
+```
+ 
 
 #### visualize_embeddings.py
 Visualizes verb representations using t-SNE, a dimensionality reduction technique.
 Helps interpret how verbs cluster in high dimensional space.
+
+Example usage:
+```ruby
+python visualized_embeddings.py --embedding_file "../data/embs/bert-base-uncased_6_verb_embeddings.pkl"
+```
 
 #### probe_analysis.py
 Trains a logistic regression classifier to predict manner/result labels from BERT embeddings.
 Uses Stratified K-Fold cross-validation for evaluation.
 Computes accuracy, F1-score, and AUC-ROC to assess model performance.
 
+Example usage:
+```ruby
+python probe_analysis.py --embedding_file "../data/embs/bert-base-uncased_6_verb_embeddings.pkl" --pca False
+```
+
 #### surprisal_analysis.py
 For each diagnostics sentence, it computes surprisal scores at every token.
 Generates plots showing word-by-word surprisal in each diagnostics sentence.
 Saves results as CSV files and visualizes surprisal across verbs.
+
+Example usage:
+```ruby
+python surprisal_analysis.py --model_name "bert-large-uncased" --diagnostic "object_omission"
+```
+
 
