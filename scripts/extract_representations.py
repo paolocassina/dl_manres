@@ -3,14 +3,10 @@ import numpy as np
 import difflib
 import pandas as pd
 import pickle
+import argparse
 from transformers import BertTokenizer, BertModel
 
 # Load BERT model & tokenizer
-#MODEL_NAME = "bert-large-uncased"
-MODEL_NAME = "bert-base-uncased"
-tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
-model = BertModel.from_pretrained(MODEL_NAME, output_hidden_states=True)
-model.eval()
 
 
 def get_verb_representation(sentence, verb_lemma, model, tokenizer, layer_num):
@@ -78,12 +74,17 @@ def compute_average_embedding(verb_lemma, examples, model, tokenizer, layer_num,
     return avg_embedding
 
 
-def process_verbs(csv_file, output_file, layer_num):
+def process_verbs(csv_file, output_file, model_name, layer_num):
     """
     Reads a CSV file with verb examples, extracts representations, and saves them.
     """
+
     df = pd.read_csv(csv_file, index_col=0, encoding='ISO-8859-1')  # Read CSV with verbs as index
     verb_embeddings = {}
+
+    tokenizer = BertTokenizer.from_pretrained(model_name)
+    model = BertModel.from_pretrained(model_name, output_hidden_states=True)
+    model.eval()
 
     for verb_lemma in df.index:
         examples = df.loc[verb_lemma].dropna().tolist()  # Get non-null example sentences
@@ -97,11 +98,21 @@ def process_verbs(csv_file, output_file, layer_num):
     print(f"Saved embeddings to {output_file}")
 
 
+def main(model_name, layer_num, examples_file):
+
+    output_file = f"../data/embs/{model_name}_{layer_num}_verb_embeddings.pkl"
+
+    process_verbs(examples_file, output_file, model_name, layer_num)
+
+
 if __name__ == "__main__":
-    layer_num = 2
-    csv_file = "../data/diagnostics/example_usage/manres_examples_complete.csv"
-    output_file = f"../data/embs/{MODEL_NAME}_{layer_num}_verb_embeddings.pkl"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_name", choices=['bert-base-uncased', 'bert-large-uncased'])
+    parser.add_argument("--layer_num", type=int, default=6,
+                        help="Path to the embeddings file")
+    parser.add_argument("--examples_file", type=str, default="../data/diagnostics/example_usage/manres_examples_complete.csv", help="Path to the file with example usages of verbs")
 
+    args = parser.parse_args()
 
-    process_verbs(csv_file, output_file, layer_num)
+    main(args.model_name, args.layer_num, args.examples_file)
 

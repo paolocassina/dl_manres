@@ -162,10 +162,9 @@ def main(embedding_file, label_file, pca=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--embedding_file", type=str, default="../data/embs/bert-base-uncased_2_verb_embeddings.pkl",
+    parser.add_argument("--embedding_file", type=str, default="../data/embs/bert-base-uncased_6_verb_embeddings.pkl",
                         help="Path to the embeddings file")
     parser.add_argument("--label_file", type=str, default="../data/verbs/manres_lemma.csv", help="Path to the labels file")
-    parser.add_argument("--pca", action="store_true", help="Apply PCA reduction to embeddings before probing")
 
     args = parser.parse_args()
     main(args.embedding_file, args.label_file, args.pca)

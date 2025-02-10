@@ -7,17 +7,12 @@ import math
 import argparse
 from transformers import BertTokenizer, BertForMaskedLM
 
-# Load BERT-base-uncased
-MODEL_NAME = "bert-large-uncased"
-tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
-model = BertForMaskedLM.from_pretrained(MODEL_NAME)
-model.eval()
 
 # Define the allowed diagnostic types
 VALID_DIAGNOSTICS = ["out_prefixation", "denial_of_action", "denial_of_result", "resultative", "object_omission"]
 
 # Set a color palette for better differentiation
-COLORS = COLORS = ['red', 'green', 'red', 'green', 'purple'] # manner in red, result in green, control in purple
+COLORS = ['red', 'green', 'red', 'green', 'purple'] # manner in red, result in green, control in purple
 
 def compute_surprisal(sentence, model, tokenizer):
     """
@@ -34,26 +29,28 @@ def compute_surprisal(sentence, model, tokenizer):
 
     surprisals = []
 
-    for i in range(1, len(tokenized_sentence) - 1):  # Exclude [CLS] and [SEP]
+    for i in range(1, len(tokenized_sentence)-1):  # If you want to exclude [CLS] and [SEP], use range(1, len(...)-1)
         masked_input_ids = input_ids.clone()
+        # If you want to mask the target word and everything that follows, change the following line with:
+        # masked_inputs_ids[0, i:] = tokenizer.mask_token_id
         masked_input_ids[0, i] = tokenizer.mask_token_id  # Mask the target word
+
 
         with torch.no_grad():
             outputs = model(masked_input_ids)
             logits = outputs.logits
 
         token_logits = logits[0, i]
-        token_probs = torch.nn.functional.softmax(token_logits, dim=-1)
+        token_probs = torch.nn.functional.softmax(token_logits, dim=-1) # probability distribution over words for the masked token
         target_token_id = input_ids[0, i].item()
-        target_prob = token_probs[target_token_id].item()
-
+        target_prob = token_probs[target_token_id].item() # probability of the target word for the masked token
         surprisal = -math.log2(target_prob)
         surprisals.append((tokenized_sentence[i], surprisal))
 
     return surprisals
 
 
-def process_diagnostic(csv_file, diagnostic):
+def process_diagnostic(csv_file, diagnostic, model_name):
     """
     Reads sentences for a specific diagnostic, computes surprisals, generates a figure with 5 subplots,
     and saves the surprisal values to a CSV file.
@@ -61,9 +58,14 @@ def process_diagnostic(csv_file, diagnostic):
     :param csv_file: Path to the CSV file containing verb examples
     :param diagnostic: The name of the diagnostic column to analyze
     """
+
+    tokenizer = BertTokenizer.from_pretrained(model_name)
+    model = BertForMaskedLM.from_pretrained(model_name)
+    model.eval()
+
     df = pd.read_csv(csv_file, index_col=0)
     verbs = df.index[:4]  # First 4 verbs
-    control_verb = df.index[-1]  # Last row (assumed to be "thought")
+    control_verb = df.index[-1]  # last row is assumed to be the control verb
 
     fig, axes = plt.subplots(5, 1, figsize=(10, 12))
 
@@ -78,7 +80,7 @@ def process_diagnostic(csv_file, diagnostic):
 
         axes[i].plot(range(len(tokens)), surprisals, label=f"{verb}", linestyle='-', marker='o', color=COLORS[i])
         axes[i].set_xticks(range(len(tokens)))
-        axes[i].set_xticklabels(tokens, fontsize=8)  #rotation=45, ha="right"
+        axes[i].set_xticklabels(tokens, fontsize=8)
         axes[i].set_ylabel("Surprisal (bits)")
         axes[i].grid(True)
 
@@ -125,10 +127,13 @@ def process_diagnostic(csv_file, diagnostic):
 
 
 if __name__ == "__main__":
+# VALID_DIAGNOSTICS = ["out_prefixation", "denial_of_action", "denial_of_result", "resultative", "object_omission"]
     parser = argparse.ArgumentParser(description="Compute and visualize surprisal for a specific diagnostic.")
-    parser.add_argument("diagnostic", type=str, choices=VALID_DIAGNOSTICS, help="The diagnostic type to analyze")
+    parser.add_argument("--model_name", type=str, choices=["bert-large-uncased", "bert-base-uncased"],
+                        default='bert-large-uncased', help="model producing surprisal values")
+    parser.add_argument("--diagnostics_file", type=str, default="../data/diagnostics/surprisal/surprisal_examples.csv",
+                        help="Path to file containing diagnostics sentences")
+    parser.add_argument("--diagnostic", type=str, choices=VALID_DIAGNOSTICS, default="out_prefixation", help="The diagnostic type to analyze")
     args = parser.parse_args()
 
-    csv_file = "../data/diagnostics/surprisal/surprisal_examples.csv"
-
-    process_diagnostic(csv_file, args.diagnostic)
+    process_diagnostic(args.diagnostics_file, args.diagnostic, args.model_name)

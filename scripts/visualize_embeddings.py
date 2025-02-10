@@ -3,7 +3,9 @@ import pickle
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import argparse
 from sklearn.manifold import TSNE
+
 
 
 # Load embeddings from the stored pickle file
@@ -44,16 +46,17 @@ def plot_embeddings(embeddings_2d, labels, output_file):
     plt.show()
 
 
-def main():
-    embs_file = "bert-base-uncased_2_verb_embeddings.pkl"
-    embeddings = load_embeddings(os.path.join("../data/embs/", embs_file))
-    verb_classes = load_verb_classes("../data/verbs/manres_lemma.csv")
+def main(embs_file, label_file):
+    embeddings = load_embeddings(embs_file)
+    verb_classes = load_verb_classes(label_file)
 
     # Ensure that we only use verbs present in both embeddings and class labels
     common_verbs = list(set(embeddings.keys()) & set(verb_classes.keys()))
     print(embeddings.keys())
     print(verb_classes.keys())
     print(f"Number of verbs in dataset: {len(common_verbs)}")
+
+
     embedding_matrix = np.array([embeddings[verb] for verb in common_verbs])
     labels = {verb: verb_classes[verb] for verb in common_verbs}
 
@@ -64,6 +67,12 @@ def main():
 
     plot_embeddings(embeddings_2d, labels, output_file=f"../results/figures/{model_embs}_{layer_embs}_manres_tsne.png")
 
-
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--embedding_file", type=str, default="../data/embs/bert-base-uncased_6_verb_embeddings.pkl",
+                        help="Path to the embeddings file")
+    parser.add_argument("--label_file", type=str, default="../data/verbs/manres_lemma.csv", help="Path to the labels file")
+
+    args = parser.parse_args()
+    main(args.embedding_file, args.label_file)
+
