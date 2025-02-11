@@ -1,4 +1,4 @@
-## Testing linguistics diagnostics with BERT
+# Testing linguistics diagnostics with BERT
 
 ## Description
 A project to explore Manner/Result complementarity (or lack thereof) in verb representations of BERT.
