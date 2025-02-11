@@ -14,6 +14,11 @@ This folder contains two csv files. manres_examples.csv contains example usages 
 #### Diagnostics/surprisal
 This folder contains a single file, surprisal_examples.csv, which contains sentences that work as diagnostics for Manner/Result complementarity, which were used for the surprisal analysis.
 
+#### Embs
+Stores pkl files containing verb embeddings extracted through the extract_representation.py script. The name of the file specifies the model and the layer at which the embeddings were extracted.
+For example, bert-base-uncased_8_verb_embeddings.pkl contains verb embeddings extracted from layer 8 of BERT base (12 layers), case insensitive.
+
+
 ### Scripts
 
 
